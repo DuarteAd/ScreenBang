@@ -1,3 +1,5 @@
+![English Flag](https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png)
+
 # **ScreenBang**
 
 **ScreenBang** is a Flipper Zero payload project designed to discreetly capture screenshots of a target Windows machine and send them directly to a Discord channel via a webhook. This repository provides both customizable and pre-configured payloads to cater to various user needs, making it a turnkey solution for Flipper Zero users.
@@ -184,6 +186,9 @@ This project is licensed under the **MIT License**. You are free to use, modify,
 ## **Support**
 
 For issues, questions, or suggestions, feel free to open an issue on [GitHub](https://github.com/DuarteAd/ScreenBang).
+
+
+#![French Flag](https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png)
 
 # **ScreenBang**
 
