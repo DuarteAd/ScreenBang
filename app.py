@@ -7,17 +7,13 @@ app = Flask(__name__)
 def home():
     return "Application Flask fonctionnelle !"
 
-@app.route('/bang.py', methods=['GET'])
-def serve_bang_py():
-    return send_file("bang.py", as_attachment=True)
-
-@app.route('/syshelper.py', methods=['GET'], endpoint='serve_syshelper_py')
-def serve_bang2_py():
-    return send_file("syshelper.py", as_attachment=True)
-
-@app.route('/bang.exe', methods=['GET'])
-def serve_script_exe():
-    return send_file("bang.exe", as_attachment=True)
+@app.route('/files/<filename>', methods=['GET'])
+def serve_file(filename):
+    try:
+        # Vérifie si le fichier demandé existe et le renvoie
+        return send_file(filename, as_attachment=True)
+    except FileNotFoundError:
+        return f"Le fichier {filename} est introuvable.", 404
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Utilise le port assigné par Heroku
